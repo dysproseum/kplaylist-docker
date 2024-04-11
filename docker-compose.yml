@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  webserver:
+    build:
+      context: ./bin/php74
+    container_name: "kplaylist-php74"
+    restart: "unless-stopped"
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - database
+    volumes:
+      - ./www:/var/www/html:rw
+      - ./config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./config/ssl:/etc/apache2/ssl/
+      - ./config/vhosts:/etc/apache2/sites-enabled
+      - ./logs/apache2:/var/log/apache2
+      - ./logs/xdebug:/var/log/xdebug
+      - ./media:/media
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  database:
+    build:
+      context: ./bin/mysql57
+    container_name: "kplaylist-mysql57"
+    restart: "unless-stopped"
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - ./config/initdb:/docker-entrypoint-initdb.d
+      - ./data/mysql:/var/lib/mysql
+      - ./logs/mysql:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: kplaylist 
+      MYSQL_DATABASE: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
