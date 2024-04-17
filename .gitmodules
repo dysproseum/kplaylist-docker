@@ -1,0 +1,4 @@
+[submodule "www/kplaylist-php7"]
+	path = www/kplaylist-php7
+	url = git@github.com:dysproseum/kplaylist-php7.git
+	branch = docker
